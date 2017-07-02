@@ -55,7 +55,8 @@ module.exports = ({log, watch}) => {
     const args = toCliArgs({
       project: 'tsconfig.json',
       rootDir: '.',
-      outDir: './dist/'
+      outDir: './dist/',
+      noUnusedLocals: true
     });
 
     const child = spawn(bin, [...args, ...watch ? ['--watch'] : []]);

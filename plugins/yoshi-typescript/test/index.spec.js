@@ -53,6 +53,19 @@ describe('Typescript', () => {
       });
   });
 
+  it('should fail with exit code 1 if unused variable was declared', () => {
+    test.setup({
+      'app/a.ts': 'function ab() {let a = 1; return 2;}',
+      'tsconfig.json': tsconfig()
+    });
+
+    return task()
+      .then(() => Promise.reject())
+      .catch(() => {
+        expect(stdout).to.contain(`error TS6133: 'a' is declared but never used.`);
+      });
+  });
+
   it('should create source maps and definition files side by side', () => {
     test.setup({
       'app/a.ts': 'const b = 2;',
