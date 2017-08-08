@@ -20,7 +20,7 @@ function onStdout(resolve, reject) {
     print(lines);
 
     if (error) {
-      return reject();
+      return reject && reject();
     }
 
     return resolve();
