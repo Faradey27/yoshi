@@ -24,13 +24,12 @@ const config = {
   },
 
   plugins: [
-    new CaseSensitivePathsPlugin(),
-    require('../lib/plugins/babelHappyPack')(projectConfig.isAngularProject())
+    new CaseSensitivePathsPlugin()
   ],
 
   module: {
     rules: [
-      require('../lib/loaders/babel')(),
+      require('../lib/loaders/babel')(projectConfig.isAngularProject()),
       require('../lib/loaders/typescript')(projectConfig.isAngularProject()),
       require('../lib/loaders/graphql')(),
       require('../lib/loaders/assets')(),

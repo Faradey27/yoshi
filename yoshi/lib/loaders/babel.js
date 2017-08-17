@@ -1,7 +1,9 @@
+'use strict';
+
 const {unprocessedModules} = require('../../config/project');
 
-module.exports = () => ({
-  test: /\.js?$/,
-  loader: 'happypack/loader?id=js',
-  include: unprocessedModules()
+module.exports = isAngularProject => ({
+  test: /\.js$/,
+  include: unprocessedModules(),
+  use: [...isAngularProject ? ['ng-annotate-loader'] : [], 'babel-loader']
 });
