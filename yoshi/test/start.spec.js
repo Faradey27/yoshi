@@ -294,6 +294,58 @@ describe('Aggregator: Start', () => {
         });
       });
 
+      describe('when define plugin variables passed', () => {
+        it('it should log YOSHI_APP_THEME replaced with real theme', () => {
+
+          child = test
+            .setup({
+              'pom.xml': fx.pom(),
+              '.babelrc': '{}',
+              'src/client.js': `module.exports = function () {console.log('ENV_VARIABLE', process.env.YOSHI_APP_THEME);};\n`,
+              'package.json': fx.packageJson()
+            })
+            .spawn('start', [], {YOSHI_APP_THEME: 'white'});
+
+          return checkServerIsServing({port: 3200, file: 'app.bundle.js'})
+            .then(content => expect(content).to.contain('console.log(\'ENV_VARIABLE\', "white")'));
+        });
+
+        it('it should not replace YOSHI_THEME, because it has invalid mask', () => {
+
+          child = test
+            .setup({
+              'pom.xml': fx.pom(),
+              '.babelrc': '{}',
+              'src/client.js': `module.exports = function () {console.log('ENV_VARIABLE', process.env.YOSHI_THEME);};\n`,
+              'package.json': fx.packageJson()
+            })
+            .spawn('start', [], {YOSHI_APP_THEME: 'white'});
+
+          return checkServerIsServing({port: 3200, file: 'app.bundle.js'})
+            .then(content => {
+              expect(content).to.not.contain('console.log(\'ENV_VARIABLE\', "white")');
+              expect(content).to.contain('console.log(\'ENV_VARIABLE\', process.env.YOSHI_THEME)');
+            });
+        });
+
+        it('it should continue to work with NODE_ENV and window.__CI_APP_VERSION__', () => {
+
+          child = test
+            .setup({
+              'pom.xml': fx.pom(),
+              '.babelrc': '{}',
+              'src/client.js': `module.exports = function () {console.log('ENV_VARIABLE', process.env.NODE_ENV, window.__CI_APP_VERSION__);};\n`,
+              'package.json': fx.packageJson()
+            })
+            .spawn('start', [], {NODE_ENV: true, ARTIFACT_VERSION: 1});
+
+          return checkServerIsServing({port: 3200, file: 'app.bundle.js'})
+            .then(content => {
+              expect(content).to.not.contain('console.log(\'ENV_VARIABLE\', true, 1)');
+            });
+        });
+      });
+
       describe('when using es6', () => {
         it(`should rebuild and restart server after a file has been changed`, () => {
           child = test

@@ -10,6 +10,7 @@ const DynamicPublicPath = require('../lib/plugins/dynamic-public-path');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 const {isObject} = require('lodash');
+const getClientEnvironment = require('./../lib/utils/env');
 const defaultCommonsChunkConfig = {
   name: 'commons',
   minChunks: 2
@@ -48,10 +49,7 @@ const config = ({debug, separateCss = projectConfig.separateCss(), analyze, disa
 
       new DynamicPublicPath(),
 
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': debug ? '"development"' : '"production"',
-        'window.__CI_APP_VERSION__': process.env.ARTIFACT_VERSION ? `"${process.env.ARTIFACT_VERSION}"` : '"0.0.0"'
-      }),
+      new webpack.DefinePlugin(getClientEnvironment(debug).stringified),
 
       ...!separateCss ? [] : [
         new ExtractTextPlugin(debug ? '[name].css' : '[name].min.css')

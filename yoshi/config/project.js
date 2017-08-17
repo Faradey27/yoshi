@@ -22,6 +22,7 @@ module.exports = {
     browser: () => getConfig('specs.browser')
   },
   exports: () => getConfig('exports'),
+  definedConstants: () => getConfig('definedConstants') || {},
   clientProjectName: () => getConfig('clientProjectName'),
   clientFilesPath: () => {
     const clientProjectName = getConfig('clientProjectName');
