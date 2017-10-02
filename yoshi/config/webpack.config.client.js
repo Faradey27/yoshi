@@ -49,11 +49,10 @@ const config = ({debug, separateCss = projectConfig.separateCss(), analyze, disa
 
       new DynamicPublicPath(),
 
-      new webpack.DefinePlugin({
+      new webpack.DefinePlugin(Object.assign({
         'process.env.NODE_ENV': debug ? '"development"' : '"production"',
         'window.__CI_APP_VERSION__': process.env.ARTIFACT_VERSION ? `"${process.env.ARTIFACT_VERSION}"` : '"0.0.0"',
-        ...definedConstants
-      }),
+      }, definedConstants)),
 
       ...!separateCss ? [] : [
         new ExtractTextPlugin(debug ? '[name].css' : '[name].min.css')
